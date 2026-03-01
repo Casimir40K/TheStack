@@ -220,17 +220,20 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--r);
-      box-shadow: var(--sh);
+      /* No box-shadow: it gets clipped by the scroll container */
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      /* Height = viewport minus everything above carousel */
-      height: max(360px, calc(100dvh - 270px));
-      max-height: 620px;
+      /* svh = small viewport height — stable, never changes as address bar shows/hides */
+      height: 54svh;
+      min-height: 360px;
+      max-height: 520px;
     }
     .day-card.is-today {
-      border-color: rgba(182,133,77,.65);
-      box-shadow: 0 0 0 2px rgba(182,133,77,.20), var(--sh);
+      border-color: var(--accent);
+      /* inset shadow draws inside the element — not clipped by scroll container,
+         perfectly follows border-radius, visually reads as a ~3px accent border */
+      box-shadow: inset 0 0 0 3px var(--accent);
     }
 
     /* Card header (not scrollable) */
@@ -576,13 +579,7 @@
     </div>
   </div>
 
-  <!-- CAROUSEL -->
-  <div class="carousel-wrap">
-    <div class="carousel" id="carousel"></div>
-    <div class="carousel-dots" id="carouselDots"></div>
-  </div>
-
-  <!-- CHECKLIST -->
+  <!-- CHECKLIST (above carousel for quick access) -->
   <div class="s-card">
     <div class="s-card-title">Today's checklist</div>
     <div class="check-list" id="checks"></div>
@@ -590,6 +587,12 @@
       <button class="btn" id="resetDayChecks">Reset today</button>
       <button class="btn" id="resetAll">Reset all data</button>
     </div>
+  </div>
+
+  <!-- CAROUSEL -->
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel"></div>
+    <div class="carousel-dots" id="carouselDots"></div>
   </div>
 
   <!-- WEEKLY METRICS -->
@@ -844,15 +847,57 @@ function calcCarouselDays(m, sel) {
   return [...DAY_ORDER]; // week: all 7 in Mon→Sun order
 }
 
+/* Brief one-line descriptor for each cell — full steps are in the modal */
+function getCellDesc(day, col) {
+  const fixed = {
+    'Wakeup':     'Hydrate + protein',
+    'AM Oral':    'Brush, scrape & rinse',
+    'Body Stack': 'Shower, moisturise & scent',
+    'Daytime':    '45-min study block',
+    'PM Oral':    'Brush, floss & mouthwash',
+    'Wind Down':  'Prayer + sleep',
+  };
+  if (fixed[col]) return fixed[col];
+
+  const byDay = {
+    'AM Face': {
+      Monday:'Cleanse, Vit C + SPF',   Tuesday:'Cleanse, Vit C + SPF',
+      Wednesday:'Cleanse, shave + SPF', Thursday:'Cleanse, Vit C + SPF',
+      Friday:'Cleanse, Vit C + SPF',   Saturday:'Cleanse, Vit C + SPF',
+      Sunday:'Cleanse + moisturise + SPF',
+    },
+    'Training': {
+      Monday:'Push workout',           Tuesday:'Pilates guided · 15 min',
+      Wednesday:'Rest',                Thursday:'Lower workout',
+      Friday:'Pilates gentle · 15 min',Saturday:'Pull workout',
+      Sunday:'Pump workout',
+    },
+    'Training Shower / Afternoon': {
+      Monday:'Shave + post-shave recovery', Tuesday:'Body rinse',
+      Wednesday:'—',                        Thursday:'Body rinse',
+      Friday:'Shave → moisturise · wait 2–3h', Saturday:'Body rinse + face cleanse',
+      Sunday:'Body rinse',
+    },
+    'Evening PM Skincare': {
+      Monday:'Double cleanse + copper peptides',
+      Tuesday:'Double cleanse + niacinamide + body tan',
+      Wednesday:'Double cleanse + salicylic acid',
+      Thursday:'Double cleanse + retinol',
+      Friday:'Cleanse (if needed) + face tan drops',
+      Saturday:'Double cleanse + niacinamide',
+      Sunday:'Double cleanse + retinol',
+    },
+  };
+  return (byDay[col] && byDay[col][day]) || '—';
+}
+
 function buildCell(day, col) {
   const el = document.createElement('div');
   el.className = 'cell';
-  const steps   = master[day].cells[col] || ['—'];
-  const preview = steps.slice(0, 2).join(' · ');
   el.innerHTML = `
     <div class="cell-left">
       <div class="cell-label">${col}</div>
-      <div class="cell-preview">${preview}</div>
+      <div class="cell-preview">${getCellDesc(day, col)}</div>
     </div>
     <div class="cell-arrow">›</div>`;
   el.addEventListener('click', () => openModal(day, col));
