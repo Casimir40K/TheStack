@@ -534,6 +534,125 @@
       background: var(--surface);
       flex-shrink: 0;
     }
+
+    /* ── PROTOCOL BUTTON ──────────────────────────── */
+    .protocol-btn {
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-br);
+      letter-spacing: .2px;
+      touch-action: manipulation;
+      min-height: 30px;
+      white-space: nowrap;
+    }
+    .protocol-btn:active { opacity: .75; }
+
+    /* ── PROTOCOL SHEET ───────────────────────────── */
+    .prot-back {
+      position: fixed;
+      inset: 0;
+      background: rgba(28,23,24,.50);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 90;
+    }
+    .prot-sheet {
+      width: 100%;
+      max-width: 600px;
+      height: 92dvh;
+      background: var(--surface);
+      border-radius: 22px 22px 0 0;
+      border-top: 1px solid var(--border);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      box-shadow: 0 -8px 40px rgba(28,23,24,.20);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+    .prot-handle {
+      width: 36px; height: 4px;
+      background: var(--border);
+      border-radius: 999px;
+      margin: 10px auto 4px;
+      flex-shrink: 0;
+    }
+    .prot-hdr {
+      padding: 8px 16px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .prot-title { font-size: 17px; font-weight: 900; letter-spacing: -.2px; }
+    .prot-sub   { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .prot-close {
+      padding: 8px 14px;
+      border-radius: var(--r-sm);
+      font-size: 13px;
+      font-weight: 700;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      min-height: 44px;
+      touch-action: manipulation;
+      flex-shrink: 0;
+    }
+    .prot-body {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    /* Rule section card */
+    .r-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+    }
+    .r-head {
+      padding: 11px 14px 9px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .r-head-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--muted);
+    }
+    .r-head-desc {
+      font-size: 12px;
+      color: var(--text);
+      margin-top: 3px;
+      font-weight: 600;
+    }
+    .r-items { padding: 6px 0; }
+    .r-item {
+      padding: 9px 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(221,208,187,.45);
+    }
+    .r-item:last-child { border-bottom: none; }
+    .r-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; line-height: 1.4; }
+    .r-text { flex: 1; min-width: 0; }
+    .r-rule  { font-size: 13px; font-weight: 700; line-height: 1.35; }
+    .r-detail { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+    .r-rule.danger { color: #A0492A; }
   </style>
 </head>
 
@@ -542,6 +661,7 @@
 <!-- HEADER -->
 <header class="hdr">
   <span class="hdr-title">The Stack</span>
+  <button class="protocol-btn" id="openProtocol">Protocol</button>
   <span class="hdr-badge">v7 · locked</span>
 </header>
 
@@ -649,6 +769,277 @@
       <button class="btn" id="clearDetails">Clear</button>
       <button class="btn btn-primary" id="saveDetails">Save</button>
     </div>
+  </div>
+</div>
+
+<!-- PROTOCOL SHEET -->
+<div class="prot-back" id="protocolBack" aria-hidden="true">
+  <div class="prot-sheet" role="dialog" aria-modal="true">
+    <div class="prot-handle"></div>
+    <div class="prot-hdr">
+      <div>
+        <div class="prot-title">The Protocol</div>
+        <div class="prot-sub">Master System v7.0 — reference guide</div>
+      </div>
+      <button class="prot-close" id="closeProtocol">Done</button>
+    </div>
+
+    <div class="prot-body">
+
+      <!-- 1. HARD STOPS -->
+      <div class="r-card">
+        <div class="r-head">
+          <div class="r-head-title">Hard Stops</div>
+          <div class="r-head-desc">Combinations that damage the barrier — never do these</div>
+        </div>
+        <div class="r-items">
+          <div class="r-item">
+            <div class="r-icon">✕</div>
+            <div class="r-text">
+              <div class="r-rule danger">No retinol + face tan drops (same evening)</div>
+              <div class="r-detail">Retinol sensitises skin; applying tan on top causes irritation and uneven colour. These two never share a night.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">✕</div>
+            <div class="r-text">
+              <div class="r-rule danger">No salicylic acid + shave (same evening)</div>
+              <div class="r-detail">Acid on freshly shaved skin = active on a compromised barrier. Wednesday's shave was moved to AM precisely to allow PM salicylic acid.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">✕</div>
+            <div class="r-text">
+              <div class="r-rule danger">No retinol + shave (same evening)</div>
+              <div class="r-detail">Same barrier-risk logic as acid + shave. Monday shave is afternoon, retinol is Thursday/Sunday PM — no overlap.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">✕</div>
+            <div class="r-text">
+              <div class="r-rule danger">No salicylic acid within ~24h of face tan drops</div>
+              <div class="r-detail">BHA strips the skin surface and fades tan colour. Wednesday PM salicylic → Thursday is fine; Friday tan is far enough away.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">✕</div>
+            <div class="r-text">
+              <div class="r-rule danger">One strong lane per night only</div>
+              <div class="r-detail">Strong lanes: retinol, salicylic acid, face tan drops, shave stress. Only one per evening. Copper peptides and niacinamide are low-stress but still avoid stacking with strong actives.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. ACTIVE SCHEDULE -->
+      <div class="r-card">
+        <div class="r-head">
+          <div class="r-head-title">Active Schedule</div>
+          <div class="r-head-desc">Each active is locked to a specific night</div>
+        </div>
+        <div class="r-items">
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">Retinol → Thursday PM + Sunday PM</div>
+              <div class="r-detail">Applied to dry skin only. After cleansing, wait 5–10 min until fully dry before applying.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">Salicylic acid → Wednesday PM</div>
+              <div class="r-detail">T-zone only for the first 2–3 weeks. Targets sebaceous filaments. Apply after double cleanse.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">Face tan drops → Friday PM</div>
+              <div class="r-detail">After the shave → moisturise → 2–3 hour wait sequence. Apply in an even layer. No oil cleanse before tan unless heavily sweaty.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">Copper peptides → Monday PM</div>
+              <div class="r-detail">In the PM double-cleanse ritual. Kept separate from the afternoon post-shave azelaic/cicaplast session.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">Niacinamide → Tuesday PM + Saturday PM</div>
+              <div class="r-detail">Reinforcement and hydration support. Low-stress, compatible with both body tan night (Tue) and recovery from Saturday's pull session.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. KEY SEQUENCES -->
+      <div class="r-card">
+        <div class="r-head">
+          <div class="r-head-title">Key Sequences</div>
+          <div class="r-head-desc">Order and timing within a session</div>
+        </div>
+        <div class="r-items">
+          <div class="r-item">
+            <div class="r-icon">→</div>
+            <div class="r-text">
+              <div class="r-rule">Retinol nights: cleanse → wait → apply</div>
+              <div class="r-detail">Oil cleanse → foaming cleanse → wait 5–10 min until skin is fully dry → retinol → moisturise. Damp skin increases retinol penetration and irritation risk.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">→</div>
+            <div class="r-text">
+              <div class="r-rule">Friday tan sequence: shave → moisturise → wait 2–3h → tan</div>
+              <div class="r-detail">Afternoon: foaming cleanse → shave → rinse → moisturise. Then wait at least 2–3 hours. Evening: optional light foaming cleanse if needed → face tan drops in even layer.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">→</div>
+            <div class="r-text">
+              <div class="r-rule">Monday post-shave (afternoon): cleanse → shave → rinse → azelaic → cicaplast</div>
+              <div class="r-detail">Post-shave acids go in the afternoon slot. Copper peptides come later in the PM double-cleanse routine — these are two distinct sessions, not one.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">→</div>
+            <div class="r-text">
+              <div class="r-rule">Wednesday AM shave sequence: cleanse → shave → rinse → azelaic → moisturise → Vit C → SPF</div>
+              <div class="r-detail">Shave moved to AM to clear the PM slot for salicylic acid. Full morning routine follows the shave.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. CLEANSING RULES -->
+      <div class="r-card">
+        <div class="r-head">
+          <div class="r-head-title">Cleansing Protocol</div>
+          <div class="r-head-desc">When to double cleanse and when not to</div>
+        </div>
+        <div class="r-items">
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">Standard PM: oil cleanse → foaming cleanse</div>
+              <div class="r-detail">Double cleanse is the default on all skincare nights. Oil cleanse removes SPF and sebum; foaming cleanse clears remaining residue before active application.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">✕</div>
+            <div class="r-text">
+              <div class="r-rule">Friday tan night: skip oil cleanse</div>
+              <div class="r-detail">Unless heavily sweaty, skip the oil cleanse before face tan drops. Stripping the skin too much before tan risks patchy or faded colour. Foaming cleanse only if needed.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. BODY CARE -->
+      <div class="r-card">
+        <div class="r-head">
+          <div class="r-head-title">Body Care Timeline</div>
+          <div class="r-head-desc">Tan and exfoliation scheduling</div>
+        </div>
+        <div class="r-items">
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">Body gradual tan → Tuesday PM</div>
+              <div class="r-detail">Apply lotion evenly after the PM double cleanse. Even application is critical to avoid streaking.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">Body exfoliation → Thursday AM</div>
+              <div class="r-detail">Dove beauty bar + African net sponge in the morning shower. Exfoliation preps the skin surface to hold tan colour more evenly.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">Body scrub → Saturday AM</div>
+              <div class="r-detail">Pineapple body scrub for smoother skin and scent. Avoid Dove bar the day after body tanning — Sunday may be day-after-tan depending on timing. Keep as per v7.0.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. TRAINING -->
+      <div class="r-card">
+        <div class="r-head">
+          <div class="r-head-title">Training Schedule</div>
+          <div class="r-head-desc">Workout placement — locked</div>
+        </div>
+        <div class="r-items">
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">Mon: Push · Tue: Pilates (15m guided) · Wed: Rest</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">Thu: Lower · Fri: Pilates (15m gentle) · Sat: Pull · Sun: Pump</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">✕</div>
+            <div class="r-text">
+              <div class="r-rule danger">No Pilates on Sunday</div>
+              <div class="r-detail">Removed to prevent overload. Sunday already has the Pump workout and the weekly review.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. DAILY NON-NEGOTIABLES -->
+      <div class="r-card">
+        <div class="r-head">
+          <div class="r-head-title">Daily Non-Negotiables</div>
+          <div class="r-head-desc">Every day, without exception</div>
+        </div>
+        <div class="r-items">
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">AM oral: brush → tongue scrape → mouthwash (optional)</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">PM oral: brush → floss → tongue scrape → mouthwash</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">SPF daily — no reapplication tracking required</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">45-min study block — define the task first</div>
+              <div class="r-detail">Reduce perfectionism and fear-of-start friction by writing the specific task before the timer starts. Vague intention = drift.</div>
+            </div>
+          </div>
+          <div class="r-item">
+            <div class="r-icon">○</div>
+            <div class="r-text">
+              <div class="r-rule">Wind down: prayer → sleep — every night</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /prot-body -->
   </div>
 </div>
 
@@ -1170,6 +1561,23 @@ document.getElementById('clearWeekly').addEventListener('click', () => {
   d.wAvg = ''; d.waist = ''; d.steps = ''; d.notes = '';
   save(d);
   loadWeekly();
+});
+
+/* ── PROTOCOL SHEET ───────────────────────────────────────── */
+function openProtocol() {
+  const el = document.getElementById('protocolBack');
+  el.style.display = 'flex';
+  el.setAttribute('aria-hidden', 'false');
+}
+function closeProtocol() {
+  const el = document.getElementById('protocolBack');
+  el.style.display = 'none';
+  el.setAttribute('aria-hidden', 'true');
+}
+document.getElementById('openProtocol').addEventListener('click', openProtocol);
+document.getElementById('closeProtocol').addEventListener('click', closeProtocol);
+document.getElementById('protocolBack').addEventListener('click', e => {
+  if (e.target === document.getElementById('protocolBack')) closeProtocol();
 });
 
 /* ── INIT ─────────────────────────────────────────────────── */
