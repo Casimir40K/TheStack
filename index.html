@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Life OS — MASTER V7.0</title>
+  <style>
+    :root{
+      --bg:#F7F1E6;
+      --card:#FFF9EF;
+      --ink:#2D2A26;
+      --muted:#6E6257;
+      --line:#E6D8C7;
+      --accent:#2F6F6D;
+      --accent2:#C46A3A;
+      --highlight:#F1D07B;
+      --soft:#F3E7D6;
+      --shadow: 0 10px 28px rgba(45,42,38,.10);
+      --radius: 18px;
+
+      --fs-h1: 18px;
+      --fs-h2: 14px;
+      --fs-body: 16px;
+      --fs-small: 13px;
+      --fs-tiny: 12px;
+
+      /* layout mode controls card width */
+      --cardWidthMobile: 100%;
+      --cardWidthDesktop: calc(50% - 6px);
+    }
+
+    @media(min-width:860px){
+      :root{
+        --fs-h1: 18px;
+        --fs-h2: 14px;
+        --fs-body: 15px;
+        --fs-small: 12px;
+        --fs-tiny: 11px;
+      }
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font: var(--fs-body)/1.35 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--ink);
+      background:var(--bg);
+    }
+
+    header{
+      padding:16px 14px 12px;
+      position:sticky; top:0; z-index:20;
+      background: linear-gradient(to bottom, rgba(247,241,230,.98), rgba(247,241,230,.90));
+      backdrop-filter: blur(8px);
+      border-bottom:1px solid var(--line);
+    }
+    .toprow{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+    h1{margin:0; font-size:var(--fs-h1); letter-spacing:.2px}
+    .badge{
+      border:1px solid var(--line);
+      background:var(--card);
+      border-radius:999px;
+      padding:7px 10px;
+      font-size:var(--fs-tiny);
+      color:var(--muted);
+      white-space:nowrap;
+      box-shadow: var(--shadow);
+    }
+    .sub{margin-top:6px; color:var(--muted); font-size:var(--fs-small)}
+
+    main{
+      padding:12px 12px 24px;
+      max-width: 980px;
+      margin:0 auto;
+      display:grid;
+      gap:12px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding:12px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2{
+      margin:0 0 10px 0;
+      font-size:var(--fs-h2);
+      color:var(--muted);
+      letter-spacing:.25px;
+      font-weight:750;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .muted{color:var(--muted)}
+    .small{font-size:var(--fs-small)}
+    .tiny{font-size:var(--fs-tiny)}
+
+    /* Controls */
+    .controls{
+      display:grid;
+      gap:10px;
+      grid-template-columns: 1fr;
+    }
+    @media(min-width:860px){
+      .controls{ grid-template-columns: 1fr 1fr; align-items:end; }
+    }
+
+    .seg{
+      display:flex; gap:8px; flex-wrap:wrap;
+      padding:6px;
+      background: var(--soft);
+      border:1px solid var(--line);
+      border-radius: 999px;
+    }
+    .seg button{
+      flex:1;
+      min-width: 86px;
+      border:1px solid transparent;
+      background: transparent;
+      border-radius: 999px;
+      padding:10px 10px;
+      font-size: var(--fs-small);
+      font-weight: 700;
+      cursor:pointer;
+      color: var(--muted);
+    }
+    .seg button.active{
+      background:#fffdf8;
+      border-color: rgba(47,111,109,.30);
+      color: var(--accent);
+      box-shadow: 0 6px 18px rgba(45,42,38,.08);
+    }
+
+    .navRow{
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+    }
+    .navRow button{
+      border:1px solid var(--line);
+      background:#fffdf8;
+      padding:10px 10px;
+      border-radius: 14px;
+      font-size: var(--fs-small);
+      font-weight: 700;
+      cursor:pointer;
+    }
+    .navRow button:active{transform: translateY(1px);}
+    .dayPill{
+      border:1px solid rgba(47,111,109,.35);
+      background: rgba(47,111,109,.10);
+      color: var(--accent);
+      border-radius: 999px;
+      padding:8px 10px;
+      font-size: var(--fs-small);
+      font-weight: 800;
+      letter-spacing:.1px;
+    }
+
+    /* Today summary */
+    .summaryBox{
+      border:1px solid var(--line);
+      background:#fffdf8;
+      border-radius: 16px;
+      padding:12px;
+    }
+    .summaryLine{
+      padding:10px 0;
+      border-bottom:1px dashed rgba(110,98,87,.25)
+    }
+    .summaryLine:last-child{border-bottom:none}
+    .summaryKey{color:var(--muted); font-size:var(--fs-small)}
+    .summaryVal{font-weight:800}
+
+    /* Checklist */
+    .checkWrap{display:grid; gap:10px}
+    .chk{
+      display:flex; gap:12px; align-items:flex-start;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background:#fffdf8;
+    }
+    input[type="checkbox"]{ width:20px; height:20px; margin-top:2px; accent-color: var(--accent); }
+    .chkTitle{font-weight:850}
+    .chkSub{color:var(--muted); font-size:var(--fs-small); margin-top:3px}
+
+    /* Carousel — ALWAYS 7 DAYS (constant height behavior) */
+    .carouselWrap{
+      position:relative;
+      overflow:hidden;
+      border-radius: var(--radius);
+    }
+    .carousel{
+      display:flex;
+      gap:12px;
+      overflow-x:auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom:8px;
+      -webkit-overflow-scrolling: touch;
+      align-items:stretch;
+    }
+    .carousel::-webkit-scrollbar{ height:10px; }
+    .carousel::-webkit-scrollbar-thumb{ background: rgba(110,98,87,.28); border-radius: 999px; }
+    .carousel::-webkit-scrollbar-track{ background: transparent; }
+
+    /* Card width is driven by CSS variables that we change per mode */
+    .dayCard{
+      flex: 0 0 var(--cardWidthMobile);
+      scroll-snap-align: start;
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:12px;
+      position:relative;
+
+      /* KEY: stable card height with internal scroll */
+      height: 72vh;
+      min-height: 520px;
+      max-height: 740px;
+
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    @media(min-width:860px){
+      .dayCard{
+        flex: 0 0 var(--cardWidthDesktop);
+        height: 70vh;
+        min-height: 560px;
+        max-height: 780px;
+      }
+    }
+
+    .dayCard.current{
+      outline: 3px solid rgba(241,208,123,.80);
+      outline-offset: 0px;
+    }
+    .dayCard.selected{
+      box-shadow: 0 18px 45px rgba(47,111,109,.16);
+      border-color: rgba(47,111,109,.45);
+    }
+
+    .dayHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+    }
+    .dayName{
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing:.2px;
+    }
+    .dayMeta{
+      color: var(--muted);
+      font-size: var(--fs-small);
+      margin-top:4px;
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:8px;
+      align-items:flex-start;
+    }
+    .chip{
+      font-size: var(--fs-tiny);
+      border:1px solid var(--line);
+      background: var(--soft);
+      padding:6px 10px;
+      border-radius:999px;
+      color: var(--muted);
+      white-space:nowrap;
+      font-weight: 850;
+    }
+    .chip.key{ border-color: rgba(47,111,109,.30); background: rgba(47,111,109,.08); color: var(--accent); }
+    .chip.warm{ border-color: rgba(196,106,58,.30); background: rgba(196,106,58,.08); color: var(--accent2); }
+    .chip.gold{ border-color: rgba(241,208,123,.70); background: rgba(241,208,123,.20); color: #6a4e18; }
+
+    /* Card body scrolls internally to avoid layout shifts */
+    .cells{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      overflow:auto;
+      padding-right:4px;
+    }
+    .cells::-webkit-scrollbar{ width:10px; }
+    .cells::-webkit-scrollbar-thumb{ background: rgba(110,98,87,.22); border-radius: 999px; }
+    .cells::-webkit-scrollbar-track{ background: transparent; }
+
+    .cell{
+      border:1px solid var(--line);
+      background:#fffdf8;
+      border-radius: 16px;
+      padding:12px;
+      cursor:pointer;
+    }
+    .cell:active{transform: translateY(1px);}
+    .cellTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:6px;
+    }
+    .cellLabel{color:var(--muted); font-size: var(--fs-small); font-weight:850; letter-spacing:.1px;}
+    .cellPreview{font-weight:850; line-height:1.25}
+    .cellHint{color:var(--muted); font-size: var(--fs-small); margin-top:4px}
+
+    /* Metrics */
+    .metricsGrid{
+      display:grid; gap:10px;
+      grid-template-columns: 1fr;
+    }
+    @media(min-width:860px){
+      .metricsGrid{ grid-template-columns: 1fr 1fr; }
+    }
+    label{display:block; font-size:var(--fs-small); color:var(--muted); margin:8px 0 6px;}
+    input, textarea{
+      width:100%;
+      border:1px solid var(--line);
+      background:#fffdf8;
+      color:var(--ink);
+      border-radius: 14px;
+      padding:12px 12px;
+      font-size: var(--fs-body);
+      outline:none;
+    }
+    textarea{min-height:120px; resize:vertical;}
+
+    .btnRow{display:flex; gap:10px; flex-wrap:wrap}
+    .btn{
+      border:1px solid var(--line);
+      background:#fffdf8;
+      padding:12px 12px;
+      border-radius: 14px;
+      font-size: var(--fs-small);
+      font-weight: 850;
+      cursor:pointer;
+    }
+    .btn.primary{
+      border-color: rgba(47,111,109,.35);
+      background: rgba(47,111,109,.10);
+      color: var(--accent);
+    }
+
+    /* Modal */
+    .modalBack{
+      position:fixed; inset:0;
+      background: rgba(45,42,38,.38);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding:12px;
+      z-index:60;
+    }
+    .modal{
+      width: min(860px, 100%);
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 22px 70px rgba(45,42,38,.25);
+      overflow:hidden;
+      max-height: 88vh;
+      display:flex;
+      flex-direction:column;
+    }
+    .modalHeader{
+      padding:14px 14px 12px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      background: linear-gradient(to bottom, #fffdf8, var(--card));
+    }
+    .modalHeader h3{margin:0; font-size: 16px; font-weight: 900;}
+    .modalHeader .meta{margin-top:5px; font-size: var(--fs-small); color: var(--muted);}
+    .closeBtn{
+      border:1px solid var(--line);
+      background:#fffdf8;
+      border-radius: 14px;
+      padding:10px 12px;
+      font-size: var(--fs-small);
+      font-weight: 850;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .modalBody{
+      padding:14px;
+      overflow:auto;
+      display:grid;
+      gap:12px;
+    }
+    .modalSection{
+      border:1px solid var(--line);
+      background:#fffdf8;
+      border-radius: 18px;
+      padding:14px;
+    }
+    .modalSection h4{
+      margin:0 0 10px 0;
+      font-size: var(--fs-small);
+      color: var(--muted);
+      letter-spacing:.2px;
+      font-weight: 900;
+    }
+    .steps{margin:0; padding-left:18px;}
+    .steps li{margin:8px 0;}
+    .modalFooter{
+      border-top:1px solid var(--line);
+      padding:12px 14px;
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      background: var(--card);
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="toprow">
+    <div>
+      <h1>Life OS — <span style="color:var(--accent)">MASTER V7.0</span></h1>
+      <div class="sub">Stable layout. Always 7-day scroll. Mode changes card width only.</div>
+    </div>
+    <div class="badge">Locked · Sunday review only</div>
+  </div>
+</header>
+
+<main>
+  <!-- CONTROLS + TODAY -->
+  <section class="card">
+    <h2>View</h2>
+
+    <div class="controls">
+      <div>
+        <div class="tiny muted" style="margin-bottom:8px;">Mode</div>
+        <div class="seg" role="tablist" aria-label="View mode">
+          <button id="modeDay" class="active">Day</button>
+          <button id="mode3">3-day</button>
+          <button id="modeWeek">Week</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="tiny muted" style="margin-bottom:8px;">Day selector</div>
+        <div class="navRow">
+          <button id="prevDay">←</button>
+          <div class="dayPill" id="dayPill">Monday</div>
+          <button id="nextDay">→</button>
+          <button id="jumpToday" class="btn primary" style="padding:10px 12px;">Today</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;" class="summaryBox">
+      <div class="summaryLine"><span class="summaryKey">Focus:</span> <span class="summaryVal" id="todayFocus"></span></div>
+      <div class="summaryLine"><span class="summaryKey">Training:</span> <span class="summaryVal" id="todayTrain"></span></div>
+      <div class="summaryLine"><span class="summaryKey">PM skincare:</span> <span class="summaryVal" id="todayPM"></span></div>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section class="card">
+    <h2>Today Checklist</h2>
+    <div id="checks" class="checkWrap"></div>
+    <div class="btnRow" style="margin-top:10px;">
+      <button class="btn" id="resetDayChecks">Reset today checks</button>
+      <button class="btn" id="resetAll">Reset all data</button>
+    </div>
+  </section>
+
+  <!-- CAROUSEL -->
+  <section class="card">
+    <h2>Routine Cards <span class="tiny muted">tap any cell</span></h2>
+    <div class="carouselWrap">
+      <div id="carousel" class="carousel" aria-label="Day cards"></div>
+    </div>
+    <div class="tiny muted" style="margin-top:8px;">Current day outlined in gold. Selected day outlined in teal.</div>
+  </section>
+
+  <!-- METRICS -->
+  <section class="card">
+    <h2>Weekly Metrics <span class="tiny muted">fill on Sunday</span></h2>
+    <div class="metricsGrid">
+      <div class="modalSection" style="margin:0;">
+        <label>Avg weight</label>
+        <input id="wAvg" placeholder="e.g., 86.1 kg" />
+        <label>Waist</label>
+        <input id="waist" placeholder="e.g., 86 cm" />
+        <label>Steps avg</label>
+        <input id="steps" placeholder="e.g., 7,800" />
+      </div>
+      <div class="modalSection" style="margin:0;">
+        <label>Weekly notes</label>
+        <textarea id="notes" placeholder="Win: …&#10;Friction: …&#10;Adjustment (if any): …"></textarea>
+      </div>
+    </div>
+    <div class="btnRow" style="margin-top:10px;">
+      <button class="btn primary" id="saveWeekly">Save weekly</button>
+      <button class="btn" id="clearWeekly">Clear weekly</button>
+    </div>
+  </section>
+</main>
+
+<!-- MODAL -->
+<div class="modalBack" id="modalBack" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modalHeader">
+      <div>
+        <h3 id="modalTitle">Cell</h3>
+        <div class="meta" id="modalMeta"></div>
+      </div>
+      <button class="closeBtn" id="closeModal">Close</button>
+    </div>
+    <div class="modalBody">
+      <div class="modalSection">
+        <h4>Step-by-step</h4>
+        <ol class="steps" id="modalSteps"></ol>
+      </div>
+      <div class="modalSection">
+        <h4>Details (editable, saved)</h4>
+        <textarea id="modalDetails" placeholder="Add specifics here (e.g., Pull workout exercises)."></textarea>
+      </div>
+    </div>
+    <div class="modalFooter">
+      <button class="btn" id="clearDetails">Clear details</button>
+      <button class="btn primary" id="saveDetails">Save details</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const KEY = "lifeos_master_v7_mobile3";
+  const dayOrder = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+  const columns = ["Wakeup","AM Oral","AM Face","Body Stack","Daytime","Training","Training Shower / Afternoon","Evening PM Skincare","PM Oral","Wind Down"];
+
+  // Useful chip info: training label, PM active label, body label (optional)
+  function pmActiveLabel(day){
+    const map = {
+      Monday: "Copper peptides",
+      Tuesday: "Niacinamide",
+      Wednesday: "Salicylic",
+      Thursday: "Retinol",
+      Friday: "Tan",
+      Saturday: "Niacinamide",
+      Sunday: "Retinol"
+    };
+    return map[day] || "PM";
+  }
+  function bodyFocusLabel(day){
+    const map = {
+      Tuesday: "Body tan",
+      Thursday: "Exfoliation",
+      Saturday: "Scrub"
+    };
+    return map[day] || "";
+  }
+  function trainingChip(day){
+    const map = {
+      Monday: "Push · strength",
+      Tuesday: "Pilates · 15m",
+      Wednesday: "—",
+      Thursday: "Lower · strength",
+      Friday: "Pilates · 15m",
+      Saturday: "Pull · strength",
+      Sunday: "Pump · strength"
+    };
+    return map[day] || "—";
+  }
+
+  // MASTER V7.0 steps
+  const master = {
+    Monday: {
+      Focus: "Push + shave recovery + peptides",
+      Training: "Push",
+      PM: "Oil cleanse → Foaming cleanse → Copper peptides → Moisturiser",
+      cells: {
+        "Wakeup": ["Drink water","Protein shake"],
+        "AM Oral": ["Brush teeth","Tongue scrape","Mouthwash (optional)"],
+        "AM Face": ["Foaming cleanser","Vitamin C serum","Moisturiser (if needed)","SPF"],
+        "Body Stack": ["Morning shower","Pears body wash (body)","Gluta-Hya body lotion","Hair (sea salt spray → clay)","Deodorant","Fragrance"],
+        "Daytime": ["45-minute defined study block (late morning / early afternoon)"],
+        "Training": ["Push workout"],
+        "Training Shower / Afternoon": ["Rinse body","Foaming cleanse (face)","Shave","Azelaic acid","Cicaplast"],
+        "Evening PM Skincare": ["Oil cleanse","Foaming cleanse","Copper peptide serum","Face moisturiser"],
+        "PM Oral": ["Brush teeth","Floss","Tongue scrape","Mouthwash"],
+        "Wind Down": ["Prayer (3–5 min)","Sleep routine"]
+      }
+    },
+    Tuesday: {
+      Focus: "Pilates + body tan + niacinamide",
+      Training: "Pilates (15 min)",
+      PM: "Oil cleanse → Foaming cleanse → Niacinamide → Moisturiser (+ body gradual tan)",
+      cells: {
+        "Wakeup": ["Drink water","Protein shake"],
+        "AM Oral": ["Brush teeth","Tongue scrape","Mouthwash (optional)"],
+        "AM Face": ["Foaming cleanser","Vitamin C serum","Moisturiser","SPF"],
+        "Body Stack": ["Morning shower","Pears body wash (body)","Gluta-Hya body lotion","Hair styling","Deodorant","Fragrance (intentional)"],
+        "Daytime": ["45-minute defined study block (if possible in peak window)"],
+        "Training": ["Pilates guided session (15 min)"],
+        "Training Shower / Afternoon": ["Body rinse (optional)"],
+        "Evening PM Skincare": ["Oil cleanse","Foaming cleanse","Niacinamide serum","Face moisturiser","Body gradual tan lotion"],
+        "PM Oral": ["Brush teeth","Floss","Tongue scrape","Mouthwash"],
+        "Wind Down": ["Prayer (3–5 min)","Sleep routine"]
+      }
+    },
+    Wednesday: {
+      Focus: "AM shave + PM salicylic acid",
+      Training: "—",
+      PM: "Oil cleanse → Foaming cleanse → Salicylic acid (T-zone initially) → Moisturiser",
+      cells: {
+        "Wakeup": ["Drink water","Protein shake"],
+        "AM Oral": ["Brush teeth","Tongue scrape","Mouthwash (optional)"],
+        "AM Face": ["Foaming cleanser","Shave","Rinse","Azelaic acid","Moisturiser","Vitamin C serum","SPF"],
+        "Body Stack": ["Morning shower","Pears body wash (body)","Gluta-Hya body lotion","Hair styling","Deodorant"],
+        "Daytime": ["45-minute defined study block"],
+        "Training": ["—"],
+        "Training Shower / Afternoon": ["—"],
+        "Evening PM Skincare": ["Oil cleanse","Foaming cleanse","Salicylic acid (T-zone first 2–3 weeks)","Face moisturiser"],
+        "PM Oral": ["Brush teeth","Floss","Tongue scrape","Mouthwash"],
+        "Wind Down": ["Prayer (3–5 min)","Sleep routine"]
+      }
+    },
+    Thursday: {
+      Focus: "Lower + body exfoliation + retinol",
+      Training: "Lower",
+      PM: "Oil cleanse → Foaming cleanse → wait dry 5–10 → Retinol → Moisturiser",
+      cells: {
+        "Wakeup": ["Drink water","Protein shake"],
+        "AM Oral": ["Brush teeth","Tongue scrape","Mouthwash (optional)"],
+        "AM Face": ["Foaming cleanser","Vitamin C serum","Moisturiser","SPF"],
+        "Body Stack": ["Morning shower","Dove beauty bar (body)","African net sponge (body exfoliation)","Gluta-Hya body lotion","Hair styling","Deodorant"],
+        "Daytime": ["45-minute defined study block"],
+        "Training": ["Lower workout"],
+        "Training Shower / Afternoon": ["Body rinse"],
+        "Evening PM Skincare": ["Oil cleanse","Foaming cleanse","Wait until dry (5–10 min)","Retinol","Face moisturiser"],
+        "PM Oral": ["Brush teeth","Floss","Tongue scrape","Mouthwash"],
+        "Wind Down": ["Prayer (3–5 min)","Sleep routine"]
+      }
+    },
+    Friday: {
+      Focus: "Shave + wait + face tan + gentle Pilates",
+      Training: "Pilates (15 min gentle)",
+      PM: "Foaming cleanse (if needed) → Face tan drops",
+      cells: {
+        "Wakeup": ["Drink water","Protein shake"],
+        "AM Oral": ["Brush teeth","Tongue scrape","Mouthwash (optional)"],
+        "AM Face": ["Foaming cleanser","Vitamin C serum","Moisturiser","SPF"],
+        "Body Stack": ["Morning shower","Pears body wash (body)","Gluta-Hya body lotion","Hair styling","Deodorant"],
+        "Daytime": ["45-minute defined study block"],
+        "Training": ["Pilates gentle session (15 min)"],
+        "Training Shower / Afternoon": ["Foaming cleanse (face)","Shave","Face moisturiser","Wait 2–3 hours"],
+        "Evening PM Skincare": ["Foaming cleanse (only if needed)","Face tan drops (even layer)"],
+        "PM Oral": ["Brush teeth","Floss","Tongue scrape","Mouthwash"],
+        "Wind Down": ["Prayer (3–5 min)","Sleep routine"]
+      }
+    },
+    Saturday: {
+      Focus: "AM body scrub + Pull + niacinamide",
+      Training: "Pull",
+      PM: "Oil cleanse → Foaming cleanse → Niacinamide → Moisturiser",
+      cells: {
+        "Wakeup": ["Drink water","Protein shake"],
+        "AM Oral": ["Brush teeth","Tongue scrape","Mouthwash (optional)"],
+        "AM Face": ["Foaming cleanser","Vitamin C serum","Moisturiser","SPF (if outside)"],
+        "Body Stack": ["Morning shower","Pineapple body scrub (body)","Light lotion","Hair styling","Deodorant","Fragrance"],
+        "Daytime": ["Social afternoon","Optional: study block (only if useful)"],
+        "Training": ["Pull workout"],
+        "Training Shower / Afternoon": ["Rinse body","Foaming cleanse (face)"],
+        "Evening PM Skincare": ["Oil cleanse","Foaming cleanse","Niacinamide serum","Face moisturiser"],
+        "PM Oral": ["Brush teeth","Floss","Tongue scrape","Mouthwash"],
+        "Wind Down": ["Prayer (3–5 min)","Sleep routine"]
+      }
+    },
+    Sunday: {
+      Focus: "Pump + walk + weekly review + retinol",
+      Training: "Pump",
+      PM: "Oil cleanse → Foaming cleanse → wait dry 5–10 → Retinol → Moisturiser",
+      cells: {
+        "Wakeup": ["Drink water","Protein shake"],
+        "AM Oral": ["Brush teeth","Tongue scrape","Mouthwash (optional)"],
+        "AM Face": ["Foaming cleanser","Moisturiser","SPF (if outside)"],
+        "Body Stack": ["Morning shower","Pears body wash (body)","Gluta-Hya body lotion","Hair styling","Deodorant"],
+        "Daytime": ["Walk","Weekly review (10–15 min)"],
+        "Training": ["Pump workout"],
+        "Training Shower / Afternoon": ["Body rinse"],
+        "Evening PM Skincare": ["Oil cleanse","Foaming cleanse","Wait until dry (5–10 min)","Retinol","Face moisturiser"],
+        "PM Oral": ["Brush teeth","Floss","Tongue scrape","Mouthwash"],
+        "Wind Down": ["Prayer (3–5 min)","Sleep routine"]
+      }
+    }
+  };
+
+  const checkItems = [
+    { id:"protein", label:"Protein shake", sub:"" },
+    { id:"study", label:"Study block (45 min)", sub:"Define task before starting" },
+    { id:"train", label:"Training done (if scheduled)", sub:"" },
+    { id:"oralpm", label:"PM oral hygiene", sub:"Brush → floss → tongue → mouthwash" },
+    { id:"prayer", label:"Prayer", sub:"3–5 min after PM oral" },
+  ];
+
+  function load(){ return JSON.parse(localStorage.getItem(KEY) || "{}"); }
+  function save(d){ localStorage.setItem(KEY, JSON.stringify(d)); }
+
+  function deviceDayName(){
+    const idx = new Date().getDay();
+    const map = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    return map[idx];
+  }
+  function clampIndex(i){ return (i + 7) % 7; }
+
+  function setMode(mode){
+    const d = load();
+    d.mode = mode;
+    save(d);
+
+    document.getElementById("modeDay").classList.toggle("active", mode==="day");
+    document.getElementById("mode3").classList.toggle("active", mode==="3");
+    document.getElementById("modeWeek").classList.toggle("active", mode==="week");
+
+    // Mode changes only widths (NOT content)
+    if(mode==="day"){
+      document.documentElement.style.setProperty("--cardWidthMobile","100%");
+      document.documentElement.style.setProperty("--cardWidthDesktop","calc(50% - 6px)");
+    } else if(mode==="3"){
+      document.documentElement.style.setProperty("--cardWidthMobile","90%");
+      document.documentElement.style.setProperty("--cardWidthDesktop","calc(33.333% - 8px)");
+    } else {
+      document.documentElement.style.setProperty("--cardWidthMobile","82%");
+      document.documentElement.style.setProperty("--cardWidthDesktop","calc(33.333% - 8px)");
+    }
+
+    // keep the selected day in view without rebuilding cards
+    scrollToDay(getSelectedDay(), true);
+  }
+
+  function getSelectedDay(){
+    const d = load();
+    return d.selectedDay || deviceDayName();
+  }
+  function setSelectedDay(day){
+    const d = load();
+    d.selectedDay = day;
+    save(d);
+    renderTop(day);
+    renderChecks(day);
+    markSelected(day);
+    scrollToDay(day, true);
+  }
+
+  function renderTop(day){
+    document.getElementById("dayPill").textContent = day;
+    document.getElementById("todayFocus").textContent = master[day].Focus;
+    document.getElementById("todayTrain").textContent = trainingChip(day);
+    document.getElementById("todayPM").textContent = pmActiveLabel(day);
+  }
+
+  function renderChecks(day){
+    const data = load();
+    const dayKey = `d_${day}`;
+    const state = data[dayKey] || {};
+    const wrap = document.getElementById("checks");
+    wrap.innerHTML = "";
+    checkItems.forEach(it=>{
+      const div = document.createElement("div");
+      div.className = "chk";
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = !!state[it.id];
+      cb.addEventListener("change", ()=>{
+        const dd=load();
+        dd[dayKey]=dd[dayKey]||{};
+        dd[dayKey][it.id]=cb.checked;
+        save(dd);
+      });
+      const text = document.createElement("div");
+      text.innerHTML = `<div class="chkTitle">${it.label}</div>` + (it.sub ? `<div class="chkSub">${it.sub}</div>` : "");
+      div.appendChild(cb);
+      div.appendChild(text);
+      wrap.appendChild(div);
+    });
+  }
+
+  function detailsKey(day,col){ return `details_${day}_${col}`; }
+
+  // Modal
+  const modalBack = document.getElementById("modalBack");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalMeta  = document.getElementById("modalMeta");
+  const modalSteps = document.getElementById("modalSteps");
+  const modalDetails = document.getElementById("modalDetails");
+  let current = { day:null, col:null };
+
+  function defaultDetailsHint(col){
+    if(col==="Training"){
+      return `Add your workout here.\n\nExample:\n- Exercise 1: 3–4 sets x 6–12\n- Exercise 2: 3–4 sets x 6–12\n- Exercise 3: 3 sets x 10–15\n- Exercise 4: 3 sets x 10–15\n\nNotes:\n- Rest 2–3 min\n- Close to failure\n`;
+    }
+    if(col==="Daytime"){
+      return `Define today’s 45-minute task.\nExample: "Draft 300 words for section X" or "Find 5 sources."`;
+    }
+    return `Optional notes for this cell.`;
+  }
+
+  function openModal(day,col){
+    current = { day, col };
+    modalTitle.textContent = `${day} — ${col}`;
+    modalMeta.textContent = master[day].Focus;
+
+    modalSteps.innerHTML = "";
+    const steps = master[day].cells[col] || ["—"];
+    steps.forEach(s=>{
+      const li = document.createElement("li");
+      li.textContent = s;
+      modalSteps.appendChild(li);
+    });
+
+    const d = load();
+    modalDetails.value = d[detailsKey(day,col)] || defaultDetailsHint(col);
+
+    modalBack.style.display = "flex";
+    modalBack.setAttribute("aria-hidden","false");
+  }
+  function closeModal(){
+    modalBack.style.display = "none";
+    modalBack.setAttribute("aria-hidden","true");
+    current = { day:null, col:null };
+  }
+  document.getElementById("closeModal").addEventListener("click", closeModal);
+  modalBack.addEventListener("click", (e)=>{ if(e.target===modalBack) closeModal(); });
+  document.getElementById("saveDetails").addEventListener("click", ()=>{
+    if(!current.day) return;
+    const d = load();
+    d[detailsKey(current.day,current.col)] = modalDetails.value;
+    save(d);
+    closeModal();
+  });
+  document.getElementById("clearDetails").addEventListener("click", ()=>{ modalDetails.value=""; });
+
+  // Build carousel ONCE with ALL 7 days (constant layout)
+  function buildCarouselOnce(){
+    const carousel = document.getElementById("carousel");
+    carousel.innerHTML = "";
+
+    const today = deviceDayName();
+    const selected = getSelectedDay();
+
+    dayOrder.forEach(day=>{
+      const card = document.createElement("div");
+      card.className = "dayCard" + (day===today ? " current" : "") + (day===selected ? " selected" : "");
+      card.dataset.day = day;
+
+      const head = document.createElement("div");
+      head.className = "dayHead";
+
+      const left = document.createElement("div");
+      left.innerHTML = `<div class="dayName">${day}</div><div class="dayMeta">${master[day].Focus}</div>`;
+
+      const chips = document.createElement("div");
+      chips.className = "chips";
+
+      const chipTrain = document.createElement("span");
+      chipTrain.className = "chip key";
+      chipTrain.textContent = trainingChip(day);
+
+      const chipPM = document.createElement("span");
+      chipPM.className = "chip warm";
+      chipPM.textContent = pmActiveLabel(day);
+
+      chips.appendChild(chipTrain);
+      chips.appendChild(chipPM);
+
+      const bf = bodyFocusLabel(day);
+      if(bf){
+        const chipBody = document.createElement("span");
+        chipBody.className = "chip gold";
+        chipBody.textContent = bf;
+        chips.appendChild(chipBody);
+      }
+
+      head.appendChild(left);
+      head.appendChild(chips);
+      card.appendChild(head);
+
+      const cells = document.createElement("div");
+      cells.className = "cells";
+
+      columns.forEach(col=>{
+        const box = document.createElement("div");
+        box.className = "cell";
+
+        const top = document.createElement("div");
+        top.className = "cellTop";
+        top.innerHTML = `<div class="cellLabel">${col}</div><div class="tiny muted">tap</div>`;
+
+        const steps = master[day].cells[col] || ["—"];
+        const preview = steps.slice(0,2).join(" · ");
+
+        const main = document.createElement("div");
+        main.className = "cellPreview";
+        main.textContent = preview || "—";
+
+        const hint = document.createElement("div");
+        hint.className = "cellHint";
+        hint.textContent = "Open for step-by-step + your saved details";
+
+        box.appendChild(top);
+        box.appendChild(main);
+        box.appendChild(hint);
+
+        box.addEventListener("click", ()=>openModal(day,col));
+        cells.appendChild(box);
+      });
+
+      card.appendChild(cells);
+
+      // tapping the header selects the day (without changing layout)
+      card.addEventListener("dblclick", ()=>setSelectedDay(day));
+      carousel.appendChild(card);
+    });
+
+    markSelected(selected);
+    requestAnimationFrame(()=>scrollToDay(selected, false));
+  }
+
+  function markSelected(day){
+    document.querySelectorAll(".dayCard").forEach(el=>{
+      el.classList.toggle("selected", el.dataset.day === day);
+    });
+  }
+
+  function scrollToDay(day, smooth){
+    const carousel = document.getElementById("carousel");
+    const card = carousel.querySelector(`.dayCard[data-day="${day}"]`);
+    if(card){
+      card.scrollIntoView({behavior: smooth ? "smooth":"auto", inline:"start", block:"nearest"});
+    }
+  }
+
+  // nav
+  document.getElementById("prevDay").addEventListener("click", ()=>{
+    const cur = getSelectedDay();
+    const idx = dayOrder.indexOf(cur);
+    setSelectedDay(dayOrder[clampIndex(idx-1)]);
+  });
+  document.getElementById("nextDay").addEventListener("click", ()=>{
+    const cur = getSelectedDay();
+    const idx = dayOrder.indexOf(cur);
+    setSelectedDay(dayOrder[clampIndex(idx+1)]);
+  });
+  document.getElementById("jumpToday").addEventListener("click", ()=>setSelectedDay(deviceDayName()));
+
+  // mode
+  document.getElementById("modeDay").addEventListener("click", ()=>setMode("day"));
+  document.getElementById("mode3").addEventListener("click", ()=>setMode("3"));
+  document.getElementById("modeWeek").addEventListener("click", ()=>setMode("week"));
+
+  // resets
+  document.getElementById("resetDayChecks").addEventListener("click", ()=>{
+    const day = getSelectedDay();
+    const d = load();
+    delete d[`d_${day}`];
+    save(d);
+    renderChecks(day);
+  });
+  document.getElementById("resetAll").addEventListener("click", ()=>{
+    localStorage.removeItem(KEY);
+    location.reload();
+  });
+
+  // metrics
+  function loadWeekly(){
+    const d=load();
+    document.getElementById("wAvg").value = d.wAvg || "";
+    document.getElementById("waist").value = d.waist || "";
+    document.getElementById("steps").value = d.steps || "";
+    document.getElementById("notes").value = d.notes || "";
+  }
+  document.getElementById("saveWeekly").addEventListener("click", ()=>{
+    const d=load();
+    d.wAvg = document.getElementById("wAvg").value;
+    d.waist = document.getElementById("waist").value;
+    d.steps = document.getElementById("steps").value;
+    d.notes = document.getElementById("notes").value;
+    save(d);
+  });
+  document.getElementById("clearWeekly").addEventListener("click", ()=>{
+    const d=load();
+    d.wAvg=""; d.waist=""; d.steps=""; d.notes="";
+    save(d);
+    loadWeekly();
+  });
+
+  function init(){
+    const d = load();
+    if(!d.mode) d.mode = "day";
+    if(!d.selectedDay) d.selectedDay = deviceDayName();
+    save(d);
+
+    setMode(d.mode);        // sets widths + button active state
+    renderTop(d.selectedDay);
+    renderChecks(d.selectedDay);
+    buildCarouselOnce();    // constant 7-day carousel, built once
+    loadWeekly();
+  }
+  init();
+</script>
+</body>
+</html>
