@@ -4,6 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>The Stack</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#B6854D" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="The Stack" />
+  <link rel="apple-touch-icon" href="icon.svg" />
   <style>
     /* ── TOKENS ─────────────────────────────────────── */
     :root {
@@ -653,6 +659,117 @@
     .r-rule  { font-size: 13px; font-weight: 700; line-height: 1.35; }
     .r-detail { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
     .r-rule.danger { color: #A0492A; }
+
+    /* ── HEADER PILLS ────────────────────────────────── */
+    .hdr-pills { display: flex; gap: 5px; align-items: center; }
+    .offsch-pill {
+      background: var(--surface2);
+      color: var(--muted);
+      border-color: var(--border);
+    }
+
+    /* ── OFF-SCHEDULE ────────────────────────────────── */
+    .os-group { margin-bottom: 4px; }
+    .os-group-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--muted);
+      padding: 8px 2px 8px;
+    }
+    .os-btns { display: flex; flex-direction: column; gap: 6px; }
+    .os-btn {
+      width: 100%;
+      text-align: left;
+      padding: 13px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      touch-action: manipulation;
+      min-height: 48px;
+      cursor: pointer;
+    }
+    .os-btn:active { background: var(--accent-bg); border-color: var(--accent-br); }
+    .os-btn-arrow { font-size: 16px; color: var(--border); flex-shrink: 0; }
+    .os-back-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      padding: 8px 2px 12px;
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+    .os-result-title {
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: -.2px;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .os-result-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 14px;
+      margin-bottom: 8px;
+    }
+    .os-result-label {
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+    .os-result-text {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.45;
+      color: var(--text);
+    }
+    .os-action-text { color: var(--accent); font-weight: 700; }
+
+    /* ── UPDATE BANNER ───────────────────────────────── */
+    .update-banner {
+      position: fixed;
+      bottom: max(16px, env(safe-area-inset-bottom, 16px));
+      left: 16px;
+      right: 16px;
+      background: var(--accent);
+      color: #FDFAF5;
+      border-radius: var(--r);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 200;
+      box-shadow: 0 4px 24px rgba(28,23,24,.30);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .update-banner button {
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.35);
+      color: inherit;
+      padding: 8px 14px;
+      border-radius: var(--r-sm);
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+      touch-action: manipulation;
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -661,7 +778,10 @@
 <!-- HEADER -->
 <header class="hdr">
   <span class="hdr-title">The Stack</span>
-  <button class="protocol-btn" id="openProtocol">Protocol</button>
+  <div class="hdr-pills">
+    <button class="protocol-btn" id="openProtocol">Protocol</button>
+    <button class="protocol-btn offsch-pill" id="openOffSch">Off-Schedule</button>
+  </div>
   <span class="hdr-badge">v7 · locked</span>
 </header>
 
@@ -1040,6 +1160,54 @@
       </div>
 
     </div><!-- /prot-body -->
+  </div>
+</div>
+
+<!-- OFF-SCHEDULE SHEET -->
+<div class="prot-back" id="offSchOverlay" aria-hidden="true">
+  <div class="prot-sheet" role="dialog" aria-modal="true" aria-labelledby="offSchHeading">
+    <div class="prot-handle"></div>
+    <div class="prot-hdr">
+      <div>
+        <div class="prot-title" id="offSchHeading">Off-Schedule</div>
+        <div class="prot-sub">What happened? No drama — just the fix.</div>
+      </div>
+      <button class="prot-close" id="closeOffSch">Done</button>
+    </div>
+
+    <!-- Scenario list -->
+    <div class="prot-body" id="offSchListView">
+      <div class="os-group">
+        <div class="os-group-label">Training</div>
+        <div class="os-btns" id="osTrainBtns"></div>
+      </div>
+      <div class="os-group">
+        <div class="os-group-label">Skincare</div>
+        <div class="os-btns" id="osSkinBtns"></div>
+      </div>
+      <div class="os-group">
+        <div class="os-group-label">System</div>
+        <div class="os-btns" id="osSysBtns"></div>
+      </div>
+    </div>
+
+    <!-- Result view -->
+    <div class="prot-body" id="offSchResultView" style="display:none">
+      <button class="os-back-btn" id="offSchBackBtn">← Back</button>
+      <div class="os-result-title" id="osResultTitle"></div>
+      <div class="os-result-item">
+        <div class="os-result-label">Situation</div>
+        <div class="os-result-text" id="osStatement"></div>
+      </div>
+      <div class="os-result-item">
+        <div class="os-result-label">Rule</div>
+        <div class="os-result-text" id="osRule"></div>
+      </div>
+      <div class="os-result-item">
+        <div class="os-result-label">Next action</div>
+        <div class="os-result-text os-action-text" id="osAction"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1580,6 +1748,127 @@ document.getElementById('protocolBack').addEventListener('click', e => {
   if (e.target === document.getElementById('protocolBack')) closeProtocol();
 });
 
+/* ── OFF-SCHEDULE PROTOCOL ────────────────────────────────── */
+const OFF_SCHEDULE = {
+  Training: [
+    {
+      label: "Missed a workout",
+      statement: "One missed session has no meaningful impact on your training. It happens.",
+      rule: "Do not double up. Do not extend the next session.",
+      action: "Resume the next scheduled workout normally."
+    },
+    {
+      label: "Missed two workouts this week",
+      statement: "The week is incomplete — that's fine. It's not a signal to scramble.",
+      rule: "Do not recover missed volume.",
+      action: "Reset the week. Resume the next scheduled session as planned."
+    },
+    {
+      label: "Bad training session",
+      statement: "A hard session that felt bad still counts. Showing up matters more than output.",
+      rule: "Do not redo it. Consistency over perfection.",
+      action: "Log it as completed. Move on to the next session."
+    },
+    {
+      label: "Two heavy sessions back-to-back",
+      statement: "Recovery is part of the system — it needs protecting.",
+      rule: "Avoid 3 heavy days in a row.",
+      action: "Make the next session light: Pump or Pilates only."
+    }
+  ],
+  Skincare: [
+    {
+      label: "Retinol too close to tan",
+      statement: "Retinol sensitises the skin. Tan on top risks irritation and uneven colour.",
+      rule: "Retinol and tan never share a night. Treat the barrier now.",
+      action: "Next 3 nights: barrier only (cleanse + moisturise). Resume retinol at its next scheduled slot."
+    },
+    {
+      label: "Retinol + salicylic same night",
+      statement: "Two strong actives in one session is too much stress for the barrier.",
+      rule: "Do not compensate with extra applications later.",
+      action: "3 barrier-only nights. Resume each active at its next planned slot."
+    },
+    {
+      label: "Shave + salicylic same evening",
+      statement: "Acid on a freshly shaved barrier causes real damage.",
+      rule: "Wednesday's shave is always AM specifically to allow PM salicylic acid.",
+      action: "48h barrier-only PM. Resume Wednesday BHA next week."
+    },
+    {
+      label: "Persistent dryness (2+ days)",
+      statement: "The skin is signalling overload. Back off and let it recover.",
+      rule: "BHA stays T-zone only until dryness resolves.",
+      action: "Skip next retinol. Add Cicaplast nightly. Reassess on Sunday."
+    }
+  ],
+  System: [
+    {
+      label: "Missed study block",
+      statement: "One missed block is not a pattern. Treat it as one data point, not a failure.",
+      rule: "Do not add extra time tomorrow — that just relocates the pressure.",
+      action: "Resume your normal 45-minute block tomorrow."
+    },
+    {
+      label: "Overwhelmed week",
+      statement: "The system has a minimum mode built for this exact moment.",
+      rule: "Minimum Mode runs for 3 days only, then return to full structure.",
+      action: "Training: Pilates only. Skincare: cleanse + moisturise only. Study: 30 minutes. Resume after 72h."
+    }
+  ]
+};
+
+function buildOffSchList() {
+  const groups = { Training: 'osTrainBtns', Skincare: 'osSkinBtns', System: 'osSysBtns' };
+  Object.entries(OFF_SCHEDULE).forEach(([cat, scenarios]) => {
+    const container = document.getElementById(groups[cat]);
+    if (!container) return;
+    container.innerHTML = '';
+    scenarios.forEach(s => {
+      const btn = document.createElement('button');
+      btn.className = 'os-btn';
+      btn.innerHTML = `<span>${s.label}</span><span class="os-btn-arrow">›</span>`;
+      btn.addEventListener('click', () => showOffSchResult(s));
+      container.appendChild(btn);
+    });
+  });
+}
+
+function showOffSchResult(s) {
+  document.getElementById('osResultTitle').textContent = s.label;
+  document.getElementById('osStatement').textContent   = s.statement;
+  document.getElementById('osRule').textContent        = s.rule;
+  document.getElementById('osAction').textContent      = s.action;
+  document.getElementById('offSchListView').style.display   = 'none';
+  document.getElementById('offSchResultView').style.display = '';
+}
+
+function openOffSch() {
+  document.getElementById('offSchListView').style.display   = '';
+  document.getElementById('offSchResultView').style.display = 'none';
+  const el = document.getElementById('offSchOverlay');
+  el.style.display = 'flex';
+  el.setAttribute('aria-hidden', 'false');
+}
+
+function closeOffSch() {
+  const el = document.getElementById('offSchOverlay');
+  el.style.display = 'none';
+  el.setAttribute('aria-hidden', 'true');
+}
+
+document.getElementById('openOffSch').addEventListener('click', openOffSch);
+document.getElementById('closeOffSch').addEventListener('click', closeOffSch);
+document.getElementById('offSchBackBtn').addEventListener('click', () => {
+  document.getElementById('offSchListView').style.display   = '';
+  document.getElementById('offSchResultView').style.display = 'none';
+});
+document.getElementById('offSchOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('offSchOverlay')) closeOffSch();
+});
+
+buildOffSchList();
+
 /* ── INIT ─────────────────────────────────────────────────── */
 function init() {
   const d = load();
@@ -1597,6 +1886,25 @@ function init() {
 }
 
 init();
+
+/* ── PWA ──────────────────────────────────────────────────── */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      reg.addEventListener('updatefound', () => {
+        const w = reg.installing;
+        w.addEventListener('statechange', () => {
+          if (w.state === 'installed' && navigator.serviceWorker.controller) {
+            const banner = document.createElement('div');
+            banner.className = 'update-banner';
+            banner.innerHTML = `<span>Update available</span><button onclick="location.reload()">Refresh</button>`;
+            document.body.appendChild(banner);
+          }
+        });
+      });
+    }).catch(() => {});
+  });
+}
 </script>
 </body>
 </html>

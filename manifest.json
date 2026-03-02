@@ -1,0 +1,19 @@
+{
+  "name": "The Stack",
+  "short_name": "Stack",
+  "description": "Daily routine tracker — Master System v7.0",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#B6854D",
+  "background_color": "#F4EBE0",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    }
+  ]
+}
